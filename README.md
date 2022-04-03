@@ -12,7 +12,7 @@
 
 ## 🦊 담당 구현 기능
 - [로고 제작](IAmGroupee/src/main/webapp/resources/img/svg/img4.png)
-- [메인 화면 프레임 구성](IAmGroupee/src/main/webapp/WEB-INF/views/mainPage.jsp)
+- [메인 화면 프레임 구성 (사원 카드, 출퇴근처리 숏컷, 결재문서 요약 조회)](IAmGroupee/src/main/webapp/WEB-INF/views/mainPage.jsp)
 - 전자결재 (기안 신청, 결재 처리, 결재 관련 문서 조회)
   * [컨트롤러](IAmGroupee/src/main/java/com/kh/iag/ea/controller/)
   * [화면](IAmGroupee/src/main/webapp/WEB-INF/views/ea/user/)
