@@ -1,7 +1,7 @@
-# 👾 전자결재 관리자 주요 로직
+# 👾 전자결재 관리자 주요 로직 (다수 ajax 비동기 처리로 하단 코드 JS로 대체)
 
 ## <문서 보안/번호 포맷 관리>
-```java
+```javascript
 // 기안신청 (처리)
 @PostMapping(value = "/write")
 public String write(Model model, HttpSession session, @ModelAttribute SignupDto dto, String leavePeriod) throws Exception {
