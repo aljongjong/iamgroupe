@@ -2,109 +2,95 @@
 
 ## <문서 보안/번호 포맷 관리>
 ```javascript
-// 기안신청 (처리)
-@PostMapping(value = "/write")
-public String write(Model model, HttpSession session, @ModelAttribute SignupDto dto, String leavePeriod) throws Exception {
-
-	// 결재선 번호 테이블 인서트(문서번호, 결재선번호)
-	int result1 = service.insertProcessNo(session, dto);
-	// 결재선 번호 테이블 셀렉트(위에서 인서트한 데이터)
-	ProcessDto pd = service.selectProcessNo();
-	// 결재선 테이블 인서트 (결재자 수만큼)
-	int result2 = service.insertProcess(dto, pd);
-
-
-	CategoryDto categoryLeave = null;
-	FormDto formLeave = null;
-	if("A".equals(dto.getLvCheck())) {
-
-		categoryLeave = service.selectCategoryLeave(dto);
-		if(categoryLeave == null) {
-			int insertCategoryLeave = service.insertCategoryLeave(dto);
-			System.out.println("insertCategoryLeave:::" + insertCategoryLeave);
-		}
-
-		formLeave = service.selectProcessLeave(dto);
-		if(formLeave == null) {
-			int insertFormLeave = service.insertFormLeave(dto);
-			System.out.println("insertFormLeave:::" + insertFormLeave);
-		}
-
-		// 연차 문서 인서트
-		int result3 = service.insertDocumentAlv(dto, pd);
-
-	} else if("B".equals(dto.getLvCheck())) {
-
-		categoryLeave = service.selectCategoryLeave(dto);
-		if(categoryLeave == null) {
-			int insertCategoryLeave = service.insertCategoryLeave(dto);
-			System.out.println("insertCategoryLeave:::" + insertCategoryLeave);
-		}
-
-		formLeave = service.selectProcessLeave(dto);
-		if(formLeave == null) {
-			int insertFormLeave = service.insertFormLeave(dto);
-			System.out.println("insertFormLeave:::" + insertFormLeave);
-		}
-
-		// 휴가 문서 인서트
-		int result3 = service.insertDocumentLv(leavePeriod, dto, pd);
-
-	} else {
-		// 문서 테이블 인서트
-		int result3 = service.insertDocument(dto, pd);
-	}
-
-	// 참조자 테이블 인서트
-	if(dto.getReferNo() != null) {
-		if(dto.getReferNo().length > 0) {			
-			int result4 = service.insertRef(dto, pd);
-		}			
-	}
-	// addAttribute
-	// 문서 정보 문서 테이블
-	DocsDto doc = service.selectDocument(pd);
-	Date makeDate = doc.getDocMake();
-	Date closeDate = doc.getDocClose();
-	SimpleDateFormat ft = new SimpleDateFormat("yyyy. MM. dd.");
-	doc.setSimpleMakeDate(ft.format(makeDate));
-	doc.setSimpleCloseDate(ft.format(closeDate));
-
-	if("A".equals(dto.getLvCheck())) {
-		Date appliDate = doc.getAlvAppli();
-		Date startDate = doc.getAlvStart();
-		Date endDate = doc.getAlvEnd();
-
-		doc.setSimpleAppliDate(ft.format(appliDate));
-		doc.setSimpleStartDate(ft.format(startDate));
-		doc.setSimpleEndDate(ft.format(endDate));
-
-	} else if("B".equals(dto.getLvCheck())) {
-		Date appliDate = doc.getLvAppli();
-		Date startDate = doc.getLvStart();
-		Date endDate = doc.getLvEnd();
-
-		doc.setSimpleAppliDate(ft.format(appliDate));
-		doc.setSimpleStartDate(ft.format(startDate));
-		doc.setSimpleEndDate(ft.format(endDate));
-	}
-
-	model.addAttribute("docInfo", doc);
-
-	// 결재자 정보 결재선 테이블
-	List<ProcessDto> processList = service.selectProcess(pd);
-	model.addAttribute("processList", processList);
-
-	log.info(doc.toString());
-	// 완료후 기안문서조회 상세 페이지로
-	return "ea/user/ea_signuplist_detail";
-}
+<script>
+// 문서 번호 포맷 디폴트값 들어가게
+        let today = new Date();
+        let year = (today.getYear()-100).toString();
+        let year1 = today.getFullYear().toString();
+        let month = (today.getMonth() + 1) > 9 ? (today.getMonth() + 1).toString() : "0" + (today.getMonth() + 1).toString();
+        let month1 = (today.getMonth() + 1).toString();
+        let date = (today.getDate() > 9) ? today.getDate().toString() : "0" + today.getDate().toString();
+        let date1 = today.getDate().toString();
+        const todayFormat1 = year + month + date;
+        const todayFormat2 = year + month1 + date1;
+        const todayFormat3 = year1 + month + date;
+        const todayFormat4 = year1 + month1 + date1;
+        $("#formatY > option[value=<c:out value='${defaultSettings.formatYear}'/>]").attr('selected', 'selected');
+        $("#formatD > option[value=<c:out value='${defaultSettings.formatDept}'/>]").attr('selected', 'selected');
+        $("#formatF > option[value=<c:out value='${defaultSettings.formatForm}'/>]").attr('selected', 'selected');
+        if("<c:out value='${defaultSettings.formatYear}'/>" == 'YYMMDD') {
+          $('#valueY').html(todayFormat1);
+          $('#wrapA > span:nth-child(1)').html(todayFormat1 + "-");
+        } else if("<c:out value='${defaultSettings.formatYear}'/>" == 'YYMD') {
+          $('#valueY').html(todayFormat2);
+          $('#wrapA > span:nth-child(1)').html(todayFormat2 + "-");
+        } else if("<c:out value='${defaultSettings.formatYear}'/>" == 'YYYYMMDD') {
+          $('#valueY').html(todayFormat3);
+          $('#wrapA > span:nth-child(1)').html(todayFormat3 + "-");
+        } else if("<c:out value='${defaultSettings.formatYear}'/>" == 'YYYYMD') {
+          $('#valueY').html(todayFormat4);
+          $('#wrapA > span:nth-child(1)').html(todayFormat4 + "-");
+        }
+        if("<c:out value='${defaultSettings.formatDept}'/>" == '부서번호') {
+          $('#valueD').html('01');
+          $('#wrapA > span:nth-child(2)').html("01-");
+        } else if("<c:out value='${defaultSettings.formatDept}'/>" == '부서이름') {
+          $('#valueD').html('인사');
+          $('#wrapA > span:nth-child(2)').html("인사-");
+        } 
+        if("<c:out value='${defaultSettings.formatForm}'/>" == '양식번호') {
+          $('#valueF').html('0001');
+          $('#wrapA > span:nth-child(3)').html("0001-1");
+        } else if("<c:out value='${defaultSettings.formatForm}'/>" == '양식이름') {
+          $('#valueF').html('비품구매서');
+          $('#wrapA > span:nth-child(3)').html("비품구매서-1");
+        } 
+        
+        // 문서 번호 포맷
+        function changeFormatY() {
+          
+          let y = $('#formatY').val();
+          if(y == 'YYMMDD') {
+            $('#valueY').html(todayFormat1);
+            $('#wrapA > span:nth-child(1)').html(todayFormat1 + "-");
+          } else if(y == 'YYMD') {
+            $('#valueY').html(todayFormat2);
+            $('#wrapA > span:nth-child(1)').html(todayFormat2 + "-");
+          } else if(y == 'YYYYMMDD') {
+            $('#valueY').html(todayFormat3);
+            $('#wrapA > span:nth-child(1)').html(todayFormat3 + "-");
+          } else if(y == 'YYYYMD') {
+            $('#valueY').html(todayFormat4);
+            $('#wrapA > span:nth-child(1)').html(todayFormat4 + "-");
+          }
+        };
+        function changeFormatD() {
+          let d = $('#formatD').val();
+          if(d == '부서번호') {
+            $('#valueD').html("01");
+            $('#wrapA > span:nth-child(2)').html("01-");
+          } else if(d == '부서이름') {
+            $('#valueD').html("인사");
+            $('#wrapA > span:nth-child(2)').html("인사-");
+          }
+        };
+        function changeFormatF() {
+          let d = $('#formatF').val();
+          if(d == '양식번호') {
+            $('#valueF').html("0001");
+            $('#wrapA > span:nth-child(3)').html("0001-1");
+          } else if(d == '양식이름') {
+            $('#valueF').html("비품구매서");
+            $('#wrapA > span:nth-child(3)').html("비품구매서-1");
+          }
+        };
+</script>
 ```
 
 ## <문서 양식 관리>
 ```javascript
- // - , + 버튼으로 카테고리, 양식 추가/삭제
  <script>
+ // - , + 버튼으로 카테고리, 양식 추가/삭제
 	function categoryPlus() {
 	  $.ajax({
 	    url : "${root}/admin/ea/insertCategory",
@@ -191,7 +177,7 @@ public String write(Model model, HttpSession session, @ModelAttribute SignupDto 
 ## <승인/만료 문서 관리>
 ```javascript
 <script>
-	// 문서관리 체크 버튼
+// 문서관리 체크 버튼
         // 상단 체크박스 클릭하면, 전체 체크박스 클릭되도록
         let topCheckBox = document.querySelector('thead input[type="checkbox"]');
         let delArr = document.getElementsByClassName('checkbox-del');
