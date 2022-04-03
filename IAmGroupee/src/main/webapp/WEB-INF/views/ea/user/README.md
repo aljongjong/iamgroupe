@@ -1,4 +1,4 @@
-# 📟 전자결재 사용자 화면구성
+# 🖥 전자결재 사용자 화면구성
 
 ## <기안 신청>
 <img width="390" alt="image" src="https://user-images.githubusercontent.com/85149442/161415722-9a986641-3f59-46ba-9a76-2b0f90d2edf5.png">
