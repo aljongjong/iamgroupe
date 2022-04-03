@@ -17,7 +17,9 @@
 - 전자결재 관리 (문서 보안/번호 포맷 관리, 문서 양식 관리, 승인/만료 문서 관리)
   * [컨트롤러](IAmGroupee/src/main/java/com/kh/iag/ea/admin/controller/)
   * [화면](IAmGroupee/src/main/webapp/WEB-INF/views/ea/admin/)
-- [사내 메신저 (실시간 채팅)]()
+- 사내 메신저 (실시간 채팅)
+  * [컨트롤러](IAmGroupee/src/main/java/com/kh/iag/chat/controller/)
+  * [화면](IAmGroupee/src/main/webapp/WEB-INF/views/ea/admin/)
 
 
 
