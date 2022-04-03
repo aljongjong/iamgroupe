@@ -11,7 +11,7 @@
 ## 🦊 담당 구현 기능
 - [로고 제작](IAmGroupee/src/main/webapp/resources/img/svg/img4.png)
 - [메인 화면 프레임 구성](IAmGroupee/src/main/webapp/WEB-INF/views/mainPage.jsp)
-- [전자결재 (기안 신청, 결재 처리, 결재 관련 문서 조회)](iamgroupe/IAmGroupee/src/main/java/com/kh/iag/ea/controller/)
+- [전자결재 (기안 신청, 결재 처리, 결재 관련 문서 조회)](IAmGroupee/src/main/java/com/kh/iag/ea/controller/)
 - [전자결재 관리 (문서 보안/번호 포맷 관리, 문서 양식 관리, 승인/만료 문서 관리)]()
 - [사내 메신저 (실시간 채팅)]()
 
