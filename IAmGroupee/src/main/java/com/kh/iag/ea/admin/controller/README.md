@@ -1,6 +1,6 @@
 # 👾 전자결재 관리자 주요 로직
 
-## <기안 신청>
+## <문서 보안/번호 포맷 관리>
 ```
 // 기안신청 (처리)
 @PostMapping(value = "/write")
@@ -101,7 +101,7 @@ public String write(Model model, HttpSession session, @ModelAttribute SignupDto 
 }
 ```
 
-## <결재 처리>
+## <문서 양식 관리>
 ```
 // 결재문서조회 (결재진행)
 @PostMapping(value = "/apprlist/process")
@@ -139,7 +139,7 @@ public String apprlisApprved(String docNo, @ModelAttribute ProcessDto dto) throw
 }
 ```
 
-## <문서 조회>
+## <승인/만료 문서 관리>
 ```
 public List<DocsDto> entireCap(HttpSession session) throws Exception {
 		
