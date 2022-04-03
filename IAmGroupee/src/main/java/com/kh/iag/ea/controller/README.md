@@ -1,8 +1,105 @@
 # 👾 전자결재 사용자 주요 로직
 
 ## <기안 신청>
-<img width="390" alt="image" src="https://user-images.githubusercontent.com/85149442/161415722-9a986641-3f59-46ba-9a76-2b0f90d2edf5.png">
-<img width="390" alt="image" src="https://user-images.githubusercontent.com/85149442/161415743-dac87e29-d740-47b0-8013-9728c6fefcc0.png">
+```
+// 기안신청 (처리)
+	@PostMapping(value = "/write")
+	public String write(Model model, HttpSession session, @ModelAttribute SignupDto dto, String leavePeriod) throws Exception {
+		
+		// 결재선 번호 테이블 인서트(문서번호, 결재선번호)
+		int result1 = service.insertProcessNo(session, dto);
+		// 결재선 번호 테이블 셀렉트(위에서 인서트한 데이터)
+		ProcessDto pd = service.selectProcessNo();
+		// 결재선 테이블 인서트 (결재자 수만큼)
+		int result2 = service.insertProcess(dto, pd);
+		
+		
+		CategoryDto categoryLeave = null;
+		FormDto formLeave = null;
+		if("A".equals(dto.getLvCheck())) {
+			
+			categoryLeave = service.selectCategoryLeave(dto);
+			if(categoryLeave == null) {
+				int insertCategoryLeave = service.insertCategoryLeave(dto);
+				System.out.println("insertCategoryLeave:::" + insertCategoryLeave);
+			}
+			
+			formLeave = service.selectProcessLeave(dto);
+			if(formLeave == null) {
+				int insertFormLeave = service.insertFormLeave(dto);
+				System.out.println("insertFormLeave:::" + insertFormLeave);
+			}
+			
+			// 연차 문서 인서트
+			int result3 = service.insertDocumentAlv(dto, pd);
+			
+		} else if("B".equals(dto.getLvCheck())) {
+			
+			categoryLeave = service.selectCategoryLeave(dto);
+			if(categoryLeave == null) {
+				int insertCategoryLeave = service.insertCategoryLeave(dto);
+				System.out.println("insertCategoryLeave:::" + insertCategoryLeave);
+			}
+			
+			formLeave = service.selectProcessLeave(dto);
+			if(formLeave == null) {
+				int insertFormLeave = service.insertFormLeave(dto);
+				System.out.println("insertFormLeave:::" + insertFormLeave);
+			}
+			
+			// 휴가 문서 인서트
+			int result3 = service.insertDocumentLv(leavePeriod, dto, pd);
+			
+		} else {
+			// 문서 테이블 인서트
+			int result3 = service.insertDocument(dto, pd);
+		}
+		
+		// 참조자 테이블 인서트
+		if(dto.getReferNo() != null) {
+			if(dto.getReferNo().length > 0) {			
+				int result4 = service.insertRef(dto, pd);
+			}			
+		}
+		// addAttribute
+		// 문서 정보 문서 테이블
+		DocsDto doc = service.selectDocument(pd);
+		Date makeDate = doc.getDocMake();
+		Date closeDate = doc.getDocClose();
+		SimpleDateFormat ft = new SimpleDateFormat("yyyy. MM. dd.");
+		doc.setSimpleMakeDate(ft.format(makeDate));
+		doc.setSimpleCloseDate(ft.format(closeDate));
+		
+		if("A".equals(dto.getLvCheck())) {
+			Date appliDate = doc.getAlvAppli();
+			Date startDate = doc.getAlvStart();
+			Date endDate = doc.getAlvEnd();
+			
+			doc.setSimpleAppliDate(ft.format(appliDate));
+			doc.setSimpleStartDate(ft.format(startDate));
+			doc.setSimpleEndDate(ft.format(endDate));
+			
+		} else if("B".equals(dto.getLvCheck())) {
+			Date appliDate = doc.getLvAppli();
+			Date startDate = doc.getLvStart();
+			Date endDate = doc.getLvEnd();
+			
+			doc.setSimpleAppliDate(ft.format(appliDate));
+			doc.setSimpleStartDate(ft.format(startDate));
+			doc.setSimpleEndDate(ft.format(endDate));
+		}
+		
+		model.addAttribute("docInfo", doc);
+		
+		// 결재자 정보 결재선 테이블
+		List<ProcessDto> processList = service.selectProcess(pd);
+		model.addAttribute("processList", processList);
+		
+		log.info(doc.toString());
+		// 완료후 기안문서조회 상세 페이지로
+		return "ea/user/ea_signuplist_detail";
+	}
+```
 
 ## <결재 처리>
 <img width="391" alt="image" src="https://user-images.githubusercontent.com/85149442/161415805-83b87eb0-d365-45cc-8047-247e1b0c22fe.png">
