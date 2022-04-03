@@ -39,7 +39,23 @@ public List<ChatDto> getChatListBox(String userNo) throws Exception {
 
 ## <대화 상대선택>
 ```java
+@RequestMapping(value = "/users", method = RequestMethod.GET)
+public String chatUsers(Model model, HttpSession session) throws Exception {
 
+	// 부서 목록 (부서 번호, 부서명)
+	List<DeptDto> deptValues = eaService.deptValues();
+	model.addAttribute("deptValues", deptValues);
+
+	// 사원 목록 (사원 번호, 이름, 부서(번호,이름), 직급(번호,이름) 데이터 가져오기 - ACTIVITY_YN = 'Y'인 사원만)
+	// 로그인한 사용자를 제외한다.
+	UserDto loginUser = (UserDto) session.getAttribute("loginUser");
+	String userNo = loginUser.getUserNo();
+	List<EAUserDto> userValues = eaService.userValue(userNo);
+	model.addAttribute("loginUserNo", userNo);
+	model.addAttribute("userValues", userValues);
+
+	return "chat/chatUsers";
+}
 ```
 
 ## <대화창>
