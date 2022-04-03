@@ -12,3 +12,4 @@
 ## <문서 조회>
 <img width="402" alt="image" src="https://user-images.githubusercontent.com/85149442/161415831-d724c592-0cdf-4a1f-9607-1867fdd94313.png">
 <img width="395" alt="image" src="https://user-images.githubusercontent.com/85149442/161415834-c0ecad4a-ce41-4ada-9754-5f14b390f8ee.png">
+<img width="400" alt="image" src="https://user-images.githubusercontent.com/85149442/161415925-59a89eaf-8827-4267-8690-afef7b21c01c.png">
