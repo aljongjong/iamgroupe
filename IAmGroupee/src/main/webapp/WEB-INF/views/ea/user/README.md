@@ -1,8 +1,8 @@
 # 🖥 전자결재 사용자 화면구성
 
 ## <기안 신청>
-<img width="390" alt="image" src="https://user-images.githubusercontent.com/85149442/161415722-9a986641-3f59-46ba-9a76-2b0f90d2edf5.png">
-<img width="390" alt="image" src="https://user-images.githubusercontent.com/85149442/161415743-dac87e29-d740-47b0-8013-9728c6fefcc0.png">
+![양식선택](https://user-images.githubusercontent.com/85149442/161417382-4cfa5e79-cd54-4cf1-abab-f26eb850aaab.png)
+![기안신청](https://user-images.githubusercontent.com/85149442/161417392-ef214c6b-73dc-4b30-929d-a06ad332a60b.png)
 
 ## <결재 처리>
 <img width="391" alt="image" src="https://user-images.githubusercontent.com/85149442/161415805-83b87eb0-d365-45cc-8047-247e1b0c22fe.png">
