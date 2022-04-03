@@ -1,7 +1,7 @@
 # 👾 전자결재 관리자 주요 로직
 
 ## <문서 보안/번호 포맷 관리>
-```
+```java
 // 기안신청 (처리)
 @PostMapping(value = "/write")
 public String write(Model model, HttpSession session, @ModelAttribute SignupDto dto, String leavePeriod) throws Exception {
@@ -102,7 +102,7 @@ public String write(Model model, HttpSession session, @ModelAttribute SignupDto 
 ```
 
 ## <문서 양식 관리>
-```
+```java
 // 결재문서조회 (결재진행)
 @PostMapping(value = "/apprlist/process")
 public String apprlisApprved(String docNo, @ModelAttribute ProcessDto dto) throws Exception {
@@ -140,7 +140,7 @@ public String apprlisApprved(String docNo, @ModelAttribute ProcessDto dto) throw
 ```
 
 ## <승인/만료 문서 관리>
-```
+```java
 public List<DocsDto> entireCap(HttpSession session) throws Exception {
 		
 	UserDto loginUser = (UserDto) session.getAttribute("loginUser");
