@@ -1,7 +1,7 @@
 # 👾 전자결재 사용자 주요 로직
 
 ## <기안 신청>
-```
+```java
 // 기안신청 (처리)
 @PostMapping(value = "/write")
 public String write(Model model, HttpSession session, @ModelAttribute SignupDto dto, String leavePeriod) throws Exception {
