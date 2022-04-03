@@ -39,22 +39,45 @@ public List<ChatDto> getChatListBox(String userNo) throws Exception {
 
 ## <대화 상대선택>
 ```java
-@RequestMapping(value = "/users", method = RequestMethod.GET)
-public String chatUsers(Model model, HttpSession session) throws Exception {
+public String getBox(String userNo) throws Exception {
+	StringBuffer result = new StringBuffer("");
+	result.append("{\"result\":[");
 
-	// 부서 목록 (부서 번호, 부서명)
-	List<DeptDto> deptValues = eaService.deptValues();
-	model.addAttribute("deptValues", deptValues);
+	List<ChatDto> chatList = getChatListBox(userNo);
+	List<UserDto> list = service.selectUserList();
+	for(int i = 0; i < list.size(); i++) {
+		for(int j = 0; j < chatList.size(); j++) {
+			if(list.get(i).getUserNo().equals(chatList.get(j).getFromId()) && !userNo.equals(chatList.get(j).getFromId())) {
+				chatList.get(j).setName(list.get(i).getName());
+				chatList.get(j).setDepartmentName(list.get(i).getDepartmentName());
+				chatList.get(j).setPositionName(list.get(i).getPositionName());
+			} else if(list.get(i).getUserNo().equals(chatList.get(j).getToId()) && !userNo.equals(chatList.get(j).getToId())) {
+				chatList.get(j).setName(list.get(i).getName());
+				chatList.get(j).setDepartmentName(list.get(i).getDepartmentName());
+				chatList.get(j).setPositionName(list.get(i).getPositionName());
+			}
+		}
+	}
 
-	// 사원 목록 (사원 번호, 이름, 부서(번호,이름), 직급(번호,이름) 데이터 가져오기 - ACTIVITY_YN = 'Y'인 사원만)
-	// 로그인한 사용자를 제외한다.
-	UserDto loginUser = (UserDto) session.getAttribute("loginUser");
-	String userNo = loginUser.getUserNo();
-	List<EAUserDto> userValues = eaService.userValue(userNo);
-	model.addAttribute("loginUserNo", userNo);
-	model.addAttribute("userValues", userValues);
+	if(chatList.size() == 0) return "";
+	for(int i = 0; i < chatList.size(); i++) {
 
-	return "chat/chatUsers";
+		String unread = "";
+		if(userNo.equals(chatList.get(i).getToId())) {
+			unread = service.selectChatUnreadedEsp(chatList.get(i));
+			if(unread.equals("0")) unread = "";
+		}
+
+		result.append("[{\"value\": \"" + chatList.get(i).getFromId() + "\"},");
+		result.append("{\"value\": \"" + chatList.get(i).getToId() + "\"},");
+		result.append("{\"value\": \"" + chatList.get(i).getDepartmentName() + " " + chatList.get(i).getName() + " " + chatList.get(i).getPositionName() + "\"},");
+		result.append("{\"value\": \"" + chatList.get(i).getChatContent() + "\"},");
+		result.append("{\"value\": \"" + chatList.get(i).getChatTime() + "\"},");
+		result.append("{\"value\": \"" + unread + "\"}]");
+		if(i != chatList.size() - 1) result.append(",");
+	}
+	result.append("], \"last\":\"" + chatList.get(chatList.size() - 1).getChatId() + "\"}");
+	return result.toString();
 }
 ```
 
