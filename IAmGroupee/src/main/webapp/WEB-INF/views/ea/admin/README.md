@@ -1,15 +1,10 @@
 # 🖥 전자결재 관리자 화면구성
 
-## <기안 신청>
-<img width="390" alt="image" src="https://user-images.githubusercontent.com/85149442/161415722-9a986641-3f59-46ba-9a76-2b0f90d2edf5.png">
-<img width="390" alt="image" src="https://user-images.githubusercontent.com/85149442/161415743-dac87e29-d740-47b0-8013-9728c6fefcc0.png">
+## <문서 보안/번호 포맷 관리>
+<img width="391" alt="image" src="https://user-images.githubusercontent.com/85149442/161417235-cbbb1c8b-6387-4e04-9bc8-9638e7b3b1dc.png">
 
-## <결재 처리>
-<img width="391" alt="image" src="https://user-images.githubusercontent.com/85149442/161415805-83b87eb0-d365-45cc-8047-247e1b0c22fe.png">
-<img width="392" alt="image" src="https://user-images.githubusercontent.com/85149442/161415809-a95a6b11-58ad-431b-a205-339dd457cf2a.png">
-<img width="393" alt="image" src="https://user-images.githubusercontent.com/85149442/161415813-c5a99332-8b76-4338-9290-6c1b150b1602.png">
+## <문서 양식 관리>
+<img width="391" alt="image" src="https://user-images.githubusercontent.com/85149442/161417244-6f53d8ff-34fb-4002-9b4c-510f6f15b11b.png">
 
-## <문서 조회>
-<img width="402" alt="image" src="https://user-images.githubusercontent.com/85149442/161415831-d724c592-0cdf-4a1f-9607-1867fdd94313.png">
-<img width="395" alt="image" src="https://user-images.githubusercontent.com/85149442/161415834-c0ecad4a-ce41-4ada-9754-5f14b390f8ee.png">
-<img width="400" alt="image" src="https://user-images.githubusercontent.com/85149442/161415925-59a89eaf-8827-4267-8690-afef7b21c01c.png">
+## <승인/만료 문서 관리>
+<img width="387" alt="image" src="https://user-images.githubusercontent.com/85149442/161417253-807a8fae-71de-4bac-9aaf-c10285b5261d.png">
