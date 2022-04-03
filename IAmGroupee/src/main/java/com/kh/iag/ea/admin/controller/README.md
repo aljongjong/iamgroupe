@@ -102,85 +102,153 @@ public String write(Model model, HttpSession session, @ModelAttribute SignupDto 
 ```
 
 ## <문서 양식 관리>
-```java
-// 결재문서조회 (결재진행)
-@PostMapping(value = "/apprlist/process")
-public String apprlisApprved(String docNo, @ModelAttribute ProcessDto dto) throws Exception {
-
-	// 결재선 테이블 업데이트
-	int result1 = service.updateProcessState(dto);			
-	if(dto.getProcSeq() == 2 || dto.getProcSeq() == 3) {
-		int result2 = service.updateStageName(dto);
-	}
-
-	// 결재업데이트한 행 가지고 와서 거기에 있는 procSep이랑 procCnt가 같고, procSeq이 1이거나 4이면 승인완료된 문서로 바꿔야함 DOC_SEP = 'Y'로
-	ProcessDto resultDto = service.checkingLastProcess(dto);
-
-	// 문서테이블 문서단계 +1 (DEFAULT '1' -> 1차결재할 차례에서 승인일때는 +1 , 전결일때는 procCnt만큼 다 올리기)
-	// 반려나 협의요청일땐 ㄴㄴ
-	if(dto.getProcSeq() != 2 && dto.getProcSeq() != 3) {
-		// +1
-		if(dto.getProcSeq() == 1) {
-			int result3 = service.updateDocumentStageWhenOne(resultDto);
-		// proCnt + 1만큼 올리기
-		} else if(dto.getProcSeq() == 4) {
-			int result4 = service.updateDocumentStageWhenFour(resultDto);
-		}
-	}
-	// 결재업데이트한 행 가지고 와서 거기에 있는 procSep이랑 procCnt가 같고, procSeq이 1이거나 4이면 승인완료된 문서로 바꿔야함 DOC_SEP = 'Y'로
-	if((resultDto.getProcSep() == resultDto.getProcCnt()) || (resultDto.getProcSeq() == 4)) {
-		if(resultDto.getProcSeq() == 1 || resultDto.getProcSeq() == 4) {
-			// EA_DOCUMENT 테이블 문서 승인완료로 돌리기
-			int result5 = service.updateDocumentSep(resultDto);
-		}
-	}
-
-	return "ea/user/ea_apprlist_list";
-}
+```javascript
+ // - , + 버튼으로 카테고리, 양식 추가/삭제
+ <script>
+	function categoryPlus() {
+	  $.ajax({
+	    url : "${root}/admin/ea/insertCategory",
+	    method : "GET",
+	    success : function(result) {
+	      $("<option>", {
+		  value : result,
+		  onclick : "seletedCategory(this);",
+		  ondblclick : "updateCategoryName();"
+	      }).text('새로운 카테고리')
+	      .appendTo("select[name=categoryNo]");
+	    },
+	    error : function(e) {
+	      console.log(e);
+	    }
+	  });
+	};
+	function categoryMinus() {
+	  if(confirm('선택하신 카테고리를 삭제하시겠습니까?\n(⚡︎삭제시 하위 문서양식까지 모두 삭제됩니다⚡︎)')) {
+	    $.ajax({
+	      url : "${root}/admin/ea/deleteCategory",
+	      method : "GET",
+	      data : {
+		categoryNo : $('select[name="categoryNo"] > option[selected="selected"]').val()
+	      },
+	      success : function(result) {
+		$('select[name="categoryNo"] > option[selected="selected"]').remove();
+	      },
+	      error : function(e) {
+		console.log(e);
+	      }
+	    });
+	  } else {
+	    return false;
+	  }
+	};
+	function formPlus() {
+	  $.ajax({
+	    url : "${root}/admin/ea/insertForm",
+	    method : "GET",
+	    data : {
+	      categoryNo : $('select[name="categoryNo"] > option[selected="selected"]').val()
+	    },
+	    success : function(result) {
+	      $("<option>", {
+		  value : result,
+		  class : $('select[name="categoryNo"] > option[selected="selected"]').val(),
+		  onclick : "selectedForm(this);",
+		  ondblclick : "updateFormName();"
+	      }).addClass('activeForm')
+	      .text('새로운 양식')
+	      .appendTo("select[name=formNo]");
+	      $("<div>", {
+		  id : result
+	      }).html('<h1 style="text-align:center">새로운 양식</h1>').appendTo("#formContents");
+	    },
+	    error : function(e) {
+	      console.log(e);
+	    }
+	  });
+	};
+	function formMinus() {
+	  if(confirm('선택하신 양식을 삭제하시겠습니까?')) {
+	    $.ajax({
+	      url : "${root}/admin/ea/deleteForm",
+	      method : "GET",
+	      data : {
+		formNo : $('select[name="formNo"] > option[selected="selected"]').val()
+	      },
+	      success : function(result) {
+		$('select[name="formNo"] > option[selected="selected"]').remove();
+	      },
+	      error : function(e) {
+		console.log(e);
+	      }
+	    });
+	  } else {
+	    return false;
+	  }
+	};
+ </script>
 ```
 
 ## <승인/만료 문서 관리>
-```java
-public List<DocsDto> entireCap(HttpSession session) throws Exception {
-		
-	UserDto loginUser = (UserDto) session.getAttribute("loginUser");
-	String userNo = loginUser.getUserNo();
-	long positionNo = loginUser.getPositionNo();
-
-	// SEC_A, SEC_B 설정정보
-	int secA = service.selectSecA();
-	int secB = service.selectSecB();
-
-
-	// 로그인한 유저의 기안문서, 결재문서, 참고문서 데이터 (S등급)
-	List<DocsDto> relatedDocs = service.selectRelatedDocs(userNo);
-
-	// 로그인한 유저와 관련없는(기안, 결재, 참고하지 않은) 문서들 (보안등급 필터링 필요)
-	List<DocsDto> notRelatedDocs = service.selectNotRelatedDocs(userNo);
-
-	// 화면으로 보낼 문서 리스트
-	List<DocsDto> entireList = new ArrayList<>();
-
-	// S등급
-	relatedDocs.stream()
-			   .forEach(d -> entireList.add(d));
-
-	// C등급 문서 처리
-	notRelatedDocs.stream()
-				  .filter(d -> d.getDocSlv().equals("C"))
-				  .forEach(d -> entireList.add(d));
-
-	// B등급 문서 처리
-	notRelatedDocs.stream()
-				  .filter(d -> d.getDocSlv().equals("B") && positionNo <= secB)
-				  .forEach(d -> entireList.add(d));
-
-	// A등급 문서 처리
-	notRelatedDocs.stream()
-				  .filter(d -> d.getDocSlv().equals("A") && positionNo <= secA)
-				  .forEach(d -> entireList.add(d));
-
-
-	return entireList;
-}
+```javascript
+<script>
+	// 문서관리 체크 버튼
+        // 상단 체크박스 클릭하면, 전체 체크박스 클릭되도록
+        let topCheckBox = document.querySelector('thead input[type="checkbox"]');
+        let delArr = document.getElementsByClassName('checkbox-del');
+        
+        topCheckBox.onchange = function(e) {
+          if(this.checked) {
+            // 상단 체크박스가 체크면 전부 다 체크
+            // 모든 체크박스 다 가져오기, 그다음에 모든 체크박스 checkd값을 true로 바꿔주기
+            // delArr 안의 요소 하나씩 꺼내와서 checked값을 true로 바꿔주기
+            for(let i = 0; i < delArr.length; ++i) {
+              delArr[i].checked = true;
+            }
+          } else {
+            // 아니면 체크 해제
+            for(let i = 0; i < delArr.length; ++i) {
+              delArr[i].checked = false;
+            }
+          }
+        };
+        // 삭제하기 버튼 눌렀을 때
+        function del() {
+          if(confirm('선택하신 문서를 삭제하시겠습니까?')) {
+            // 삭제할 번호 가져오기
+            // 가져온 번호들을 하나의 문자열로 합치기
+            let result = "";
+            let delArr = document.getElementsByClassName('checkbox-del');
+            
+            for(let i = 0; i < delArr.length; ++i) {
+              let t = delArr[i];
+              if(t.checked) {
+                result += t.value + ',';
+              }
+            }
+            // 삭제 요청 보내기 (삭제할 번호 전달해주면서)
+            $.ajax({
+              url : "${root}/admin/ea/delete",
+              data : {"str" : result},
+              type : "post",
+              success : function(data) {
+                for(let i = 0; i < delArr.length; ++i) {
+                  let t = delArr[i];
+                  if(t.checked) {
+                    t.parentElement.parentElement.remove();
+                  }
+                }
+                alert('선택하신 문서가 삭제되었습니다!');
+              },
+              error : function(e) {
+                alert(e);
+              }
+            });
+            return true;
+          } else {
+            return false;
+          }
+          // 새로고침
+          // window.location.reload();
+        }
+</script>
 ```
