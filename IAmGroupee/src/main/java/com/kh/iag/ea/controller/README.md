@@ -102,7 +102,7 @@ public String write(Model model, HttpSession session, @ModelAttribute SignupDto 
 ```
 
 ## <결재 처리>
-```
+```java
 // 결재문서조회 (결재진행)
 @PostMapping(value = "/apprlist/process")
 public String apprlisApprved(String docNo, @ModelAttribute ProcessDto dto) throws Exception {
@@ -140,7 +140,7 @@ public String apprlisApprved(String docNo, @ModelAttribute ProcessDto dto) throw
 ```
 
 ## <문서 조회>
-```
+```java
 public List<DocsDto> entireCap(HttpSession session) throws Exception {
 		
 	UserDto loginUser = (UserDto) session.getAttribute("loginUser");
