@@ -83,5 +83,22 @@ public String getBox(String userNo) throws Exception {
 
 ## <대화창>
 ```java
+@RequestMapping(value = "/sendingChat", method = RequestMethod.POST, produces="application/text; charset=utf8")
+@ResponseBody
+public String sendingChat(Model model, @ModelAttribute ChatDto dto) throws Exception {
 
+	String fromId = dto.getFromId();
+	String toId = dto.getToId();
+	String chatContent = dto.getChatContent();
+
+	if(fromId == null || fromId.equals("") || toId == null || toId.equals("") || chatContent == null || chatContent.equals("")) {
+		return "0";
+	} else if(fromId.equals(toId)) {
+		return "-1";
+	} else {
+		int result = submit(dto);
+		return result + "";
+	}
+
+}
 ```
