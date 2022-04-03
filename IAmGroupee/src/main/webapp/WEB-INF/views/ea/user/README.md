@@ -5,9 +5,9 @@
 ![기안신청](https://user-images.githubusercontent.com/85149442/161417392-ef214c6b-73dc-4b30-929d-a06ad332a60b.png)
 
 ## <결재 처리>
-<img width="391" alt="image" src="https://user-images.githubusercontent.com/85149442/161415805-83b87eb0-d365-45cc-8047-247e1b0c22fe.png">
-<img width="392" alt="image" src="https://user-images.githubusercontent.com/85149442/161415809-a95a6b11-58ad-431b-a205-339dd457cf2a.png">
-<img width="393" alt="image" src="https://user-images.githubusercontent.com/85149442/161415813-c5a99332-8b76-4338-9290-6c1b150b1602.png">
+![결재문서조회](https://user-images.githubusercontent.com/85149442/161417547-98901ac7-e220-47c4-8fc4-447c3e594737.png)
+![결재처리선택](https://user-images.githubusercontent.com/85149442/161417559-1b13da52-8a84-49a4-9e6b-02ae8aa29a94.png)
+![결재처리](https://user-images.githubusercontent.com/85149442/161417577-35c2e213-296f-4c5b-88c6-205eab7915fe.png)
 
 ## <문서 조회>
 <img width="402" alt="image" src="https://user-images.githubusercontent.com/85149442/161415831-d724c592-0cdf-4a1f-9607-1867fdd94313.png">
