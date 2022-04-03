@@ -102,9 +102,42 @@
 ```
 
 ## <결재 처리>
-<img width="391" alt="image" src="https://user-images.githubusercontent.com/85149442/161415805-83b87eb0-d365-45cc-8047-247e1b0c22fe.png">
-<img width="392" alt="image" src="https://user-images.githubusercontent.com/85149442/161415809-a95a6b11-58ad-431b-a205-339dd457cf2a.png">
-<img width="393" alt="image" src="https://user-images.githubusercontent.com/85149442/161415813-c5a99332-8b76-4338-9290-6c1b150b1602.png">
+```
+// 결재문서조회 (결재진행)
+	@PostMapping(value = "/apprlist/process")
+	public String apprlisApprved(String docNo, @ModelAttribute ProcessDto dto) throws Exception {
+		
+		// 결재선 테이블 업데이트
+		int result1 = service.updateProcessState(dto);			
+		if(dto.getProcSeq() == 2 || dto.getProcSeq() == 3) {
+			int result2 = service.updateStageName(dto);
+		}
+		
+		// 결재업데이트한 행 가지고 와서 거기에 있는 procSep이랑 procCnt가 같고, procSeq이 1이거나 4이면 승인완료된 문서로 바꿔야함 DOC_SEP = 'Y'로
+		ProcessDto resultDto = service.checkingLastProcess(dto);
+		
+		// 문서테이블 문서단계 +1 (DEFAULT '1' -> 1차결재할 차례에서 승인일때는 +1 , 전결일때는 procCnt만큼 다 올리기)
+		// 반려나 협의요청일땐 ㄴㄴ
+		if(dto.getProcSeq() != 2 && dto.getProcSeq() != 3) {
+			// +1
+			if(dto.getProcSeq() == 1) {
+				int result3 = service.updateDocumentStageWhenOne(resultDto);
+			// proCnt + 1만큼 올리기
+			} else if(dto.getProcSeq() == 4) {
+				int result4 = service.updateDocumentStageWhenFour(resultDto);
+			}
+		}
+		// 결재업데이트한 행 가지고 와서 거기에 있는 procSep이랑 procCnt가 같고, procSeq이 1이거나 4이면 승인완료된 문서로 바꿔야함 DOC_SEP = 'Y'로
+		if((resultDto.getProcSep() == resultDto.getProcCnt()) || (resultDto.getProcSeq() == 4)) {
+			if(resultDto.getProcSeq() == 1 || resultDto.getProcSeq() == 4) {
+				// EA_DOCUMENT 테이블 문서 승인완료로 돌리기
+				int result5 = service.updateDocumentSep(resultDto);
+			}
+		}
+		
+		return "ea/user/ea_apprlist_list";
+	}
+```
 
 ## <문서 조회>
 <img width="402" alt="image" src="https://user-images.githubusercontent.com/85149442/161415831-d724c592-0cdf-4a1f-9607-1867fdd94313.png">
