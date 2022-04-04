@@ -35,4 +35,4 @@
 - CSS3
 
 ## 🗄 데이터베이스 모델링
-![v3 0 (최종본)](https://user-images.githubusercontent.com/85149442/161480385-7d0ced0e-6629-4cf9-8013-2cd3c842364b.png)
+![v3 0 (최종본)](https://user-images.githubusercontent.com/85149442/161481221-9331db33-6cb7-4a61-be28-d3d7b685aa8c.png)
