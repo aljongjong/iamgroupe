@@ -91,7 +91,7 @@ function changeFormatF() {
 ## <문서 양식 관리>
 ```javascript
  <script>
- // - , + 버튼으로 카테고리, 양식 추가/삭제
+ // - , + 버튼으로 카테고리, 카테고리 추가/삭제
 function categoryPlus() {
   $.ajax({
     url : "${root}/admin/ea/insertCategory",
@@ -128,6 +128,8 @@ function categoryMinus() {
     return false;
   }
 };
+
+// - , + 버튼으로 카테고리, 양식 추가/삭제
 function formPlus() {
   $.ajax({
     url : "${root}/admin/ea/insertForm",
